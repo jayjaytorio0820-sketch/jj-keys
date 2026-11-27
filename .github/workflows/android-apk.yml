@@ -1,0 +1,53 @@
+name: Build JJ Keys APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Build APK with Android build tools
+        run: |
+          set -euo pipefail
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          BT="$SDK/build-tools/$(ls "$SDK/build-tools" | sort -V | tail -1)"
+          PLAT="$(ls -d "$SDK"/platforms/android-* | sort -V | tail -1)"
+          echo "build-tools: $BT"; echo "platform: $PLAT"
+          JAR="$PLAT/android.jar"
+          cd android
+          rm -rf build && mkdir -p build/flat build/gen build/classes build/dex
+          "$BT/aapt2" compile --dir res -o build/flat
+          "$BT/aapt2" link -I "$JAR" --manifest AndroidManifest.xml -A assets \
+            --min-sdk-version 24 --target-sdk-version 34 \
+            --java build/gen -o build/base.apk build/flat/*.flat
+          javac --release 11 -classpath "$JAR" -d build/classes $(find src build/gen -name '*.java')
+          "$BT/d8" --lib "$JAR" --min-api 24 --release --output build/dex $(find build/classes -name '*.class')
+          cp build/base.apk build/unsigned.apk
+          (cd build/dex && zip -q -j ../unsigned.apk classes.dex)
+          "$BT/zipalign" -f -p 4 build/unsigned.apk build/aligned.apk
+          "$BT/apksigner" sign --ks jjkeys.jks --ks-key-alias jjkeys \
+            --ks-pass pass:jjkeys-sign --key-pass pass:jjkeys-sign \
+            --out build/JJ-Keys.apk build/aligned.apk
+          "$BT/apksigner" verify build/JJ-Keys.apk
+      - name: Publish APK to the apk branch
+        run: |
+          set -euo pipefail
+          mkdir /tmp/out && cp android/build/JJ-Keys.apk /tmp/out/
+          cd /tmp/out
+          git init -q -b apk
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          echo "Built from ${GITHUB_SHA} on $(date -u)" > BUILD.txt
+          git add . && git commit -q -m "APK build ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" apk

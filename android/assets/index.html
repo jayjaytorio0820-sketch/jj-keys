@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>JJ Keys</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HOME -->
+<section class="screen active" id="scr-home">
+  <div class="home">
+    <div class="home-left">
+      <div class="brand">
+        <div class="logo"><span></span><span class="b"></span><span></span><span class="b"></span><span></span></div>
+        <div><h1>JJ Keys</h1><p>Keyboard lessons — from zero to pro, step by step.</p></div>
+      </div>
+      <div class="levelcard">
+        <div class="ring" id="hRing"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="rbg"/><circle cx="22" cy="22" r="19" class="rfg" id="hRingFg"/></svg><b id="hPct">0%</b></div>
+        <div><small>Your level</small><h2 id="hLevel">Beginner</h2><p id="hXp">0 XP · 0 lessons done</p></div>
+      </div>
+      <div class="continue" id="hContinue">
+        <small>Next lesson</small>
+        <h3 id="hNextT">—</h3>
+        <p id="hNextS">—</p>
+        <button class="btn gold big" id="hStart">▶ Start</button>
+      </div>
+    </div>
+    <div class="home-right">
+      <button class="tile" data-go="stages"><i>📚</i><b>Lessons</b><small>8 stages, 0 → pro</small></button>
+      <button class="tile" data-go="free"><i>🎹</i><b>Free Play</b><small>Play, see notes & chords</small></button>
+      <button class="tile" data-go="studio"><i>✍️</i><b>Note Studio</b><small>Write your own music</small></button>
+      <button class="tile" data-go="practice"><i>🎯</i><b>Practice</b><small>Drills: reading, chords, rhythm</small></button>
+      <button class="tile small" data-go="settings"><i>⚙️</i><b>Settings</b></button>
+      <button class="tile small" data-go="guide"><i>❔</i><b>How to use</b></button>
+    </div>
+  </div>
+</section>
+
+<!-- STAGES -->
+<section class="screen" id="scr-stages">
+  <div class="topbar"><button class="iconbtn" data-back>‹</button><div class="ttl"><b>Lessons</b><small>Finish a lesson to unlock the next one</small></div></div>
+  <div class="scroll" id="stageList"></div>
+</section>
+
+<!-- LESSON -->
+<section class="screen" id="scr-lesson">
+  <div class="topbar">
+    <button class="iconbtn" data-back>‹</button>
+    <div class="ttl"><b id="lTitle">Lesson</b><small id="lSub"></small></div>
+    <div class="pbar"><i id="lProg"></i></div>
+    <button class="iconbtn txt" id="lLabels" title="Note names on keys">A·B</button>
+  </div>
+  <div class="lbody">
+    <div class="ltext" id="lText"></div>
+    <div class="lstaff" id="lStaff"></div>
+  </div>
+  <div class="lctl"><div class="lbtns" id="lCtl"></div><div class="fb" id="lFb"></div><button class="btn gold" id="lNext" disabled>Next ›</button></div>
+  <div class="kbhost" id="kbLesson"></div>
+</section>
+
+<!-- FREE PLAY -->
+<section class="screen" id="scr-free">
+  <div class="topbar">
+    <button class="iconbtn" data-back>‹</button>
+    <div class="ttl"><b>Free Play</b><small>Play anything — see the note and chord</small></div>
+    <div class="tools">
+      <button class="chip" id="fOctDn">◀ Oct</button><button class="chip" id="fOctUp">Oct ▶</button>
+      <button class="chip" id="fMetro">♩ Metronome</button>
+      <input type="number" id="fBpm" value="80" min="30" max="220" class="num">
+      <button class="chip" id="fLabels">A·B</button>
+    </div>
+  </div>
+  <div class="freebody">
+    <div class="readout"><small>Note</small><div id="fNote" class="bigname">—</div><small>Chord</small><div id="fChord" class="chordname">—</div></div>
+    <div class="lstaff paper" id="fStaff"></div>
+  </div>
+  <div class="kbhost" id="kbFree"></div>
+</section>
+
+<!-- STUDIO -->
+<section class="screen" id="scr-studio">
+  <div class="topbar">
+    <button class="iconbtn" data-back>‹</button>
+    <input class="songtitle" id="sTitle" value="My Song" maxlength="40">
+    <div class="tools">
+      <select id="sClef" class="sel"><option value="treble">Treble 𝄞</option><option value="bass">Bass</option><option value="grand">Grand staff</option></select>
+      <select id="sTs" class="sel"><option>4/4</option><option>3/4</option><option>2/4</option><option>6/8</option></select>
+      <input type="number" id="sBpm" value="90" min="30" max="220" class="num" title="Tempo (BPM)">
+      <button class="chip" id="sNew">New</button><button class="chip" id="sOpen">Open</button><button class="chip gold" id="sSave">Save</button>
+    </div>
+  </div>
+  <div class="lstaff paper studio" id="sStaff"></div>
+  <div class="ctools" id="sTools"></div>
+  <div class="kbhost" id="kbStudio"></div>
+</section>
+
+<!-- PRACTICE -->
+<section class="screen" id="scr-practice">
+  <div class="topbar"><button class="iconbtn" data-back>‹</button><div class="ttl"><b>Practice</b><small>Endless drills to make it stick</small></div></div>
+  <div class="scroll"><div class="grid" id="drillList"></div></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="screen" id="scr-settings">
+  <div class="topbar"><button class="iconbtn" data-back>‹</button><div class="ttl"><b>Settings</b></div></div>
+  <div class="scroll"><div class="settings" id="setList"></div></div>
+</section>
+
+<!-- GUIDE -->
+<section class="screen" id="scr-guide">
+  <div class="topbar"><button class="iconbtn" data-back>‹</button><div class="ttl"><b>How to use JJ Keys</b></div></div>
+  <div class="scroll"><div class="guide">
+    <h3>🎹 The glowing keys are your teacher</h3>
+    <p>In every lesson, the key you should press <b class="gold">glows gold</b>. The small number on it is the <b>finger</b> to use (1 = thumb … 5 = pinky). Green flash = correct, red flash = try again.</p>
+    <h3>📚 Follow the stages in order</h3>
+    <p>Stage 1 starts from zero (where the notes are). Each lesson unlocks the next. Earn up to ⭐⭐⭐ — fewer mistakes, more stars.</p>
+    <h3>🎵 Songs wait for you</h3>
+    <p>In song lessons the music waits until you press the right key, so you can go slow. Tap <b>▶ Listen</b> first to hear how it should sound.</p>
+    <h3>📖 Reading music</h3>
+    <p>From Stage 3 you learn to read notes on the staff. Later, some songs hide the glowing keys so you read the notes yourself. Tap <b>💡 Hint</b> if you get stuck.</p>
+    <h3>✍️ Note Studio</h3>
+    <p>Pick a note length (whole, half, quarter, eighth), then press a key — the note is written on the staff. Press several keys together to write a chord. Tap a note on the staff to select it and change it. Save your songs and play them back.</p>
+    <h3>💡 Tips</h3>
+    <p>Use landscape. On a phone, use the ◀ ▶ buttons to move the keyboard. Turn note names (A·B) off when you're ready to play like a pro. Practice 10–15 minutes every day — short and steady beats long and rare.</p>
+  </div></div>
+</section>
+
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="engine.js"></script>
+<script src="lessons.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
